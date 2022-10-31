@@ -81,6 +81,7 @@ def message_results():
     users_message = request.form.get('message')
     return f"Here's your secret message!\n {sort_letters(users_message)}"
 
+# ------------------------------- Calculator ------------------------------- 
 @app.route('/calculator')
 def calculator():
     """Shows the user a form to enter 2 numbers and an operation."""
@@ -102,8 +103,23 @@ def calculator():
 @app.route('/calculator_results')
 def calculator_results():
     """Shows the user the result of their calculation."""
-    pass
+    users_first_number = int(request.args.get('operand1'))
+    users_second_number = int(request.args.get('operand2'))
+    users_option = request.args.get('operation')
 
+    if users_option == "add":
+        result = users_first_number + users_second_number
+        return f"You chose to add {users_first_number} and {users_second_number} . Your result is: {result}"
+    elif users_option == "subtract":
+        result = users_first_number - users_second_number
+        return f"You chose to subtract {users_first_number} and {users_second_number} . Your result is: {result}"
+    elif users_option == "multiply":
+        result = users_first_number * users_second_number
+        return f"You chose to multiply {users_first_number} and {users_second_number} . Your result is: {result}"
+    elif users_option == "divide":
+        result = users_first_number / users_second_number
+        return f"You chose to divide {users_first_number} and {users_second_number} . Your result is: {result}"
+        
 
 HOROSCOPE_PERSONALITIES = {
     'aries': 'Adventurous and energetic',
