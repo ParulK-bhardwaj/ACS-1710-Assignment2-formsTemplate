@@ -5,7 +5,11 @@
     </head>
     <body>
         
-        <h3>Hello {{users_name}}! Your Horoscope sign is: {{horoscope_sign}}, Personality is: {{personality}}, and Lucky number is: {{lucky_number}}</h3>
+        <h3>Hello {{users_name}}!</h3>
+
+        <h4>Your Horoscope Sign is: {{horoscope_sign.title()}}</h4>
+        <h4>Personality is: {{personality}}</h4>
+        <h4>Lucky number is: {{lucky_number}}</h4>
         
     </body>
 </html>
