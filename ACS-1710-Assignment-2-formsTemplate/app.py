@@ -1,5 +1,3 @@
-from crypt import methods
-from operator import methodcaller
 from flask import Flask, request, render_template
 import random
 
@@ -16,26 +14,20 @@ def homepage():
     """A homepage with handy links for your convenience."""
     return render_template('home.html')
 
-# ------------------------------- FroYO------------------------------- 
+# ------------------------------- FroYO ------------------------------- 
 @app.route('/froyo')
 def choose_froyo():
     """Shows a form to collect the user's Fro-Yo order."""
-    return """
-    <form action="/froyo_results" method="GET">
-        What is your favorite Fro-Yo flavor? <br/>
-        <input type="text" name="flavor"><br/>
-        What toppings you want to add? <br/>
-        <input type="text" name="toppings"></br>
-        <input type="submit" value="Submit!">
-    </form>
-    """
+    return render_template('froyo_form.html')
 
 @app.route('/froyo_results')
 def show_froyo_results():
     """Shows the user what they ordered from the previous page."""
-    users_froyo_flavor = request.args.get("flavor")
-    users_toppings = request.args.get("toppings")
-    return f"You ordered {users_froyo_flavor} falvored Fro-Yo with {users_toppings}!"
+    context = {
+        'users_froyo_flavor': request.args.get("flavor"),
+        'users_toppings': request.args.get("toppings")
+    }
+    return render_template('froyo_results.html', **context)
 
 # ------------------------------- Favorites ------------------------------- 
 @app.route('/favorites')
@@ -85,20 +77,7 @@ def message_results():
 @app.route('/calculator')
 def calculator():
     """Shows the user a form to enter 2 numbers and an operation."""
-    return """
-    <form action="/calculator_results" method="GET">
-        Please enter 2 numbers and select an operator.<br/><br/>
-        <input type="number" name="operand1">
-        <select name="operation">
-            <option value="add">+</option>
-            <option value="subtract">-</option>
-            <option value="multiply">*</option>
-            <option value="divide">/</option>
-        </select>
-        <input type="number" name="operand2">
-        <input type="submit" value="Submit!">
-    </form>
-    """
+    return render_template('calculator_form.html')
 
 @app.route('/calculator_results')
 def calculator_results():
@@ -109,17 +88,26 @@ def calculator_results():
 
     if users_option == "add":
         result = users_first_number + users_second_number
-        return f"You chose to add {users_first_number} and {users_second_number} . Your result is: {result}"
+        return f"You chose to {users_option} {users_first_number} and {users_second_number}. Your result is: {result}"
     elif users_option == "subtract":
         result = users_first_number - users_second_number
-        return f"You chose to subtract {users_first_number} and {users_second_number} . Your result is: {result}"
+        return f"You chose to {users_option} {users_first_number} and {users_second_number}. Your result is: {result}"
     elif users_option == "multiply":
         result = users_first_number * users_second_number
-        return f"You chose to multiply {users_first_number} and {users_second_number} . Your result is: {result}"
+        return f"You chose to {users_option} {users_first_number} and {users_second_number}. Your result is: {result}"
     elif users_option == "divide":
         result = users_first_number / users_second_number
-        return f"You chose to divide {users_first_number} and {users_second_number} . Your result is: {result}"
+        return f"You chose to {users_option} {users_first_number} and {users_second_number}. Your result is: {result}"
         
+    context = {
+        'operand1': users_first_number,
+        'operand2' : users_second_number,
+        'operation' : users_option,
+        'result' : result
+    }
+    return render_template('calculator_results.html', **context)
+
+# ------------------------------- Horoscope ------------------------------- 
 
 HOROSCOPE_PERSONALITIES = {
     'aries': 'Adventurous and energetic',
@@ -144,18 +132,19 @@ def horoscope_form():
 @app.route('/horoscope_results')
 def horoscope_results():
     """Shows the user the result for their chosen horoscope."""
+    users_name = request.args.get('users_name')
+    horoscope_sign = request.args.get('horoscope_sign')
 
-    # TODO: Get the sign the user entered in the form, based on their birthday
-    horoscope_sign = ''
+    for sign in HOROSCOPE_PERSONALITIES:
+        if sign == horoscope_sign:
+            users_personality = (HOROSCOPE_PERSONALITIES[sign])
 
-    # TODO: Look up the user's personality in the HOROSCOPE_PERSONALITIES
-    # dictionary based on what the user entered
-    users_personality = ''
-
-    # TODO: Generate a random number from 1 to 99
     lucky_number = 0
+    lucky_number = random.randint(1,99)
 
+    # added users_name to greet the user by name
     context = {
+        'users_name': users_name,
         'horoscope_sign': horoscope_sign,
         'personality': users_personality, 
         'lucky_number': lucky_number
